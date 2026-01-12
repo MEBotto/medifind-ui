@@ -1,3 +1,5 @@
+import { Button } from "./components/ui/button";
+
 function App() {
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
@@ -7,6 +9,7 @@ function App() {
       <p className="text-gray-600 text-lg">
         Plataforma iniciada correctamente.
       </p>
+      <Button className="bg-blue-500">Click me</Button>
     </main>
   );
 }
