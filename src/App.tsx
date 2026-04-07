@@ -1,16 +1,28 @@
-import { Button } from "./components/ui/button";
+import { Route, Routes } from "react-router-dom";
+import DashboardLayout from "./pages/(dashboard)/layout";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import DashboardIndex from "./pages/(dashboard)";
+import Account from "./pages/(dashboard)/account";
+import Checkout from "./pages/(dashboard)/checkout";
+import Orders from "./pages/(dashboard)/my_orders";
+import Pharmacies from "./pages/(dashboard)/pharmacies";
+import Reports from "./pages/(dashboard)/reports";
 
 function App() {
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
-      <h1 className="text-4xl font-semibold text-gray-900 mb-2">
-        Medifind UI
-      </h1>
-      <p className="text-gray-600 text-lg">
-        Plataforma iniciada correctamente.
-      </p>
-      <Button className="bg-blue-500">Click me</Button>
-    </main>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/dashboard" element={<DashboardLayout />} >
+        <Route index element={<DashboardIndex />} />
+        <Route path="account" element={<Account />} />
+        <Route path="checkout" element={<Checkout />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="pharmacies" element={<Pharmacies />} />
+        <Route path="reports" element={<Reports />} />
+      </Route>
+    </Routes>
   );
 }
 
