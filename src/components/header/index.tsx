@@ -1,15 +1,12 @@
 import MediFindLogo from "../ui/MediFindLogo"
 import ThemeToggle from "../ui/theme-toggle"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import SearchBar from "../searchbar"
 import Filter from "../filter"
-import { Button } from "../ui/button"
-import { useNavigate } from "react-router-dom"
+import Cart from "../cart"
 import { SidebarTrigger, useSidebar } from "../ui/sidebar"
 
 
 const index = () => {
-    const navigate = useNavigate()
 
     const { open } = useSidebar()
 
@@ -29,18 +26,7 @@ const index = () => {
                     <div className="flex items-center space-x-3">
                         <Filter />
                         <ThemeToggle />
-
-                        <div className="hidden min-[375px]:flex items-center">
-                            <Button variant="outline" className="w-8 h-8 rounded-full ring-0 ring-primary/20" onClick={() => navigate("/dashboard/account")}>
-                                <Avatar className="w-8 h-8 ring-2 ring-primary/20">
-                                    <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                                    <AvatarFallback className="bg-primary text-primary-foreground">
-                                        U
-                                    </AvatarFallback>
-                                </Avatar>
-                            </Button>
-                        </div>
-
+                        <Cart />
                     </div>
 
                 </div>

@@ -1,6 +1,9 @@
+
 const index = () => {
     return (
-        <div>checkout</div>
+        <div>
+            Tu carrito
+        </div>
     )
 }
 

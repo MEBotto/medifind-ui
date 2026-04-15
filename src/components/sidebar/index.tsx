@@ -11,7 +11,7 @@ import MediFindLogo from "../ui/MediFindLogo"
 
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
 
-import { Home, User, Heart, ShoppingBag, FileText, LogOut } from "lucide-react"
+import { Home, User, Heart, ShoppingBag, FileText, LogOut, ShoppingCart, Box } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 
 const index = () => {
@@ -23,6 +23,8 @@ const index = () => {
         { icon: User, label: "Cuenta", href: "/dashboard/account" },
         { icon: Heart, label: "Farmacias", href: "/dashboard/pharmacies" },
         { icon: ShoppingBag, label: "Mis Pedidos", href: "/dashboard/orders" },
+        { icon: ShoppingCart, label: "Carrito", href: "/dashboard/cart" },
+        { icon: Box, label: "Mis Productos", href: "/dashboard/my_products" },
         { icon: FileText, label: "Informe", href: "/dashboard/reports" },
     ]
 
