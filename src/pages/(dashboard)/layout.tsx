@@ -14,7 +14,7 @@ const Layout = () => {
         <div className="flex min-h-screen">
             <SidebarProvider>
                 <Sidebar />
-                <div className="flex-1">
+                <div className="flex flex-col min-h-[99vh] flex-1">
                     <Header />
                     <section className="p-4">
                         <Outlet />

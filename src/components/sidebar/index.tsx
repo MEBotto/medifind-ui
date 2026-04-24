@@ -8,6 +8,7 @@ import {
     SidebarMenuButton,
 } from "../ui/sidebar"
 import MediFindLogo from "../ui/MediFindLogo"
+import { useSidebar } from "../ui/sidebar"
 
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
 
@@ -17,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom"
 const index = () => {
 
     const navigate = useNavigate()
+    const { setOpen } = useSidebar()
 
     const sidebarItems = [
         { icon: Home, label: "Inicio", href: "/dashboard" },
@@ -33,7 +35,7 @@ const index = () => {
     }
 
     return (
-        <Sidebar>
+        <Sidebar className="fixed top-0 left-0 h-full z-50 py-3!">
 
             <SidebarContent>
 
@@ -62,6 +64,19 @@ const index = () => {
                                         </SidebarMenuItem>
 
                                     ))}
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton
+                                            className="h-15 hover:bg-gray-200 hover:text-black"
+                                            onClick={() => setOpen(false)}
+                                        >
+                                            <div className="flex items-center ">
+                                                <LogOut className="w-7 h-7 mr-6 ml-5 text-[#2b9ad5]" />
+                                                <div className="text-lg">
+                                                    Cerrar Barra
+                                                </div>
+                                            </div>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
 
                                 </SidebarMenu>
 
@@ -74,6 +89,7 @@ const index = () => {
                 </Collapsible>
 
             </SidebarContent>
+
             <SidebarMenuItem>
                 <SidebarMenuButton className="flex items-center gap-2 h-15 text-lg hover:bg-accent/50 hover:text-black" onClick={handleLogout}>
                     <LogOut className="ml-5 mr-10 w-7! h-7! text-destructive" />
