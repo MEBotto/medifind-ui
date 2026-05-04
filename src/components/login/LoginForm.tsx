@@ -62,8 +62,8 @@ export default function LoginPage() {
                         <FieldError errors={[errors.password]} />
                     </Field>
                     <Field orientation="vertical">
-                        <Button className="hover:bg-chart-5 text-lg!" type="submit">Iniciar sesión</Button>
-                        <Button type="button" variant="outline" className="bg-card/95 border-0 hover:bg-chart-4 text-lg!" onClick={handleCreateAccount}>
+                        <Button className="hover:bg-chart-5 text-md!" type="submit">Iniciar sesión</Button>
+                        <Button type="button" variant="outline" className="bg-card/95 border-0 hover:bg-chart-4 text-md!" onClick={handleCreateAccount}>
                             ¿No tienes cuenta? Crear Cuenta
                         </Button>
                     </Field>
