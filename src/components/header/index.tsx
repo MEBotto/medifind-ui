@@ -13,7 +13,7 @@ const index = () => {
     return (
         <header className="flex items-center bg-card/80 backdrop-blur-sm border-b border-border h-20">
             <div className="flex items-center justify-between w-full px-4">
-                <div className="flex items-center space-x-3 flex-shrink-0">
+                <div className="flex items-center space-x-3 shrink-0">
 
                     {/* Logo hides when sidebar is open */}
                     {!open && (

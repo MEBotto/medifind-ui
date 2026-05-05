@@ -18,6 +18,7 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Controller, useForm } from "react-hook-form"
+import { useEffect } from "react"
 
 interface ModifyProductForm {
     name: string
@@ -31,6 +32,22 @@ interface ModifyProductForm {
     quantity: number
     price: number
 }
+
+interface AddProductForm {
+    id: string
+    name: string
+    description: string
+    category: string
+    laboratory: string
+    dosage: number
+    magnitude: string
+    format: string
+    pharmacy: string
+    quantity: number
+    price: number
+    img: string
+}
+
 
 const index = () => {
 
@@ -60,7 +77,7 @@ const index = () => {
             pharmacy: "Fenix",
             category: "Medicamento",
             quantity: 5,
-            price: 21.5,
+            price: 22,
             img: "../../src/images/EmpoleonPlaymatMayorRes.png"
         },
         {
@@ -94,11 +111,21 @@ const index = () => {
     ])
 
     const {
-        register,
-        control,
-        handleSubmit,
-        formState: { errors },
+        register: registerModify,
+        control: controlModify,
+        handleSubmit: handleSubmitModify,
+        formState: { errors: errorsModify },
+        reset: resetModify,
     } = useForm<ModifyProductForm>()
+
+    const {
+        register: registerAdd,
+        control: controlAdd,
+        handleSubmit: handleSubmitAdd,
+        formState: { errors: errorsAdd },
+        reset: resetAdd,
+    } = useForm<AddProductForm>()
+
 
     const [searchTerm, setSearchTerm] = useState("")
 
@@ -106,11 +133,16 @@ const index = () => {
 
     const [openModifyDialogId, setOpenModifyDialogId] = useState<string | null>(null)
 
+    const [openAddDialog, setOpenAddDialog] = useState<boolean>(false)
+
     const filteredProducts = products.filter((p) => {
         return (
             p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.laboratory.toLowerCase().includes(searchTerm.toLowerCase()) ||
             p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.laboratory.toLowerCase().includes(searchTerm.toLowerCase())
+            p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.format.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.pharmacy.toLowerCase().includes(searchTerm.toLowerCase())
         )
     })
 
@@ -126,21 +158,21 @@ const index = () => {
         )
     }
 
-    const handleAdd = (id: string) => {
-        setProducts((prev) =>
-            prev.map((p) =>
-                p.id === id
-                    ? { ...p, quantity: p.quantity + 1 }
-                    : p
-            )
-        )
-    }
-
     const handleRemove = (id: string) => {
         setProducts((prev) =>
             prev.map((p) =>
                 p.id === id
                     ? { ...p, quantity: Math.max(0, p.quantity - 1) }
+                    : p
+            )
+        )
+    }
+
+    const handleAdd = (id: string) => {
+        setProducts((prev) =>
+            prev.map((p) =>
+                p.id === id
+                    ? { ...p, quantity: p.quantity + 1 }
                     : p
             )
         )
@@ -181,13 +213,45 @@ const index = () => {
                 El producto {data.name} fue modificado exitosamente
             </span>
         )
+        resetModify()
+    }
+
+    useEffect(() => {
+        if (!openModifyDialogId) return
+
+        const product = products.find(p => p.id === openModifyDialogId)
+        if (!product) return
+
+        resetModify({
+            name: product.name,
+            description: product.description,
+            category: product.category,
+            laboratory: product.laboratory,
+            dosage: product.dosage,
+            magnitude: product.magnitude,
+            format: product.format,
+            pharmacy: product.pharmacy,
+            quantity: product.quantity,
+            price: product.price,
+        })
+    }, [openModifyDialogId])
+
+    const handleAddProduct = (data: AddProductForm) => {
+        setProducts([...products, data])
+        setOpenAddDialog(false)
+        resetAdd()
+        toast.success(
+            <span className="text-lg font-semibold">
+                El producto {data.name} fue agregado exitosamente
+            </span>
+        )
     }
 
     return (
         <div className="space-y-8">
 
-            <div className="bg-primary/80 rounded-xl p-6 text-white">
-                <div className="relative">
+            <div className="bg-primary/80 rounded-xl p-6 flex flex-row  text-white">
+                <div className="w-full relative mr-4">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-sky-200 w-5 h-5" />
                     <Input
                         placeholder="Buscar productos..."
@@ -196,6 +260,196 @@ const index = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
+                <Dialog
+                    open={openAddDialog}
+                    onOpenChange={(open) =>
+                        setOpenAddDialog(open)
+                    }>
+                    <DialogTrigger asChild>
+                        <Button className="w-auto bg-green-500">Agregar producto</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <form name="AddProductForm" onSubmit={handleSubmitAdd(handleAddProduct)}>
+                            <DialogHeader>
+                                <DialogTitle className="text-center text-chart-4/90 text-2xl">Agregar Producto</DialogTitle>
+                                <DialogDescription className="text-center text-chart-4/80 text-md">
+                                    Usted esta por agregar un producto al stock.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex gap-6 items-start max-h-[50vh] overflow-y-auto">
+                                <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                    <Field data-invalid={!!errorsAdd.id} className="gap-1">
+                                        <FieldLabel htmlFor="register-id">ID</FieldLabel>
+                                        <Input
+                                            id="register-id"
+                                            {...registerAdd("id", { required: "El ID es requerido" })}
+                                            aria-invalid={!!errorsAdd.id}
+                                        />
+                                        <FieldError errors={[errorsAdd.id]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.name} className="gap-1">
+                                        <FieldLabel htmlFor="register-username">Nombre</FieldLabel>
+                                        <Input
+                                            id="register-username"
+                                            {...registerAdd("name", { required: "El nombre es requerido" })}
+                                            aria-invalid={!!errorsAdd.name}
+                                        />
+                                        <FieldError errors={[errorsAdd.name]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.description} className="gap-1">
+                                        <FieldLabel htmlFor="register-description">Descripción</FieldLabel>
+                                        <Input
+                                            id="register-description"
+                                            {...registerAdd("description", { required: "La descripción es requerida" })}
+                                            aria-invalid={!!errorsAdd.description}
+
+                                        />
+                                        <FieldError errors={[errorsAdd.description]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.category} className="gap-1">
+                                        <FieldLabel htmlFor="category">Categoria</FieldLabel>
+                                        <Controller
+                                            name="category"
+                                            control={controlAdd}
+                                            rules={{ required: "Selecciona la categoría" }}
+                                            render={({ field }) => (
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <SelectTrigger className="h-12">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Medicamento">Medicamento</SelectItem>
+                                                        <SelectItem value="Suplemento">Suplemento</SelectItem>
+                                                        <SelectItem value="Cosmetico">Cosmetico</SelectItem>
+                                                        <SelectItem value="Ortopedico">Ortopedico</SelectItem>
+                                                        <SelectItem value="Cuidado Personal">Cuidado Personal</SelectItem>
+                                                        <SelectItem value="Bebida">Bebida</SelectItem>
+                                                        <SelectItem value="Alimento">Alimento</SelectItem>
+                                                        <SelectItem value="Otro">Otro</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
+                                        <FieldError errors={[errorsAdd.category]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.laboratory} className="gap-1">
+                                        <FieldLabel htmlFor="laboratory">Laboratorio</FieldLabel>
+                                        <Controller
+                                            name="laboratory"
+                                            control={controlAdd}
+                                            rules={{ required: "Selecciona el laboratorio" }}
+                                            render={({ field }) => (
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <SelectTrigger className="h-12">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Sanofi">Sanofi</SelectItem>
+                                                        <SelectItem value="Bayer">Bayer</SelectItem>
+                                                        <SelectItem value="Novartis">Novartis</SelectItem>
+                                                        <SelectItem value="Pfizer">Pfizer</SelectItem>
+                                                        <SelectItem value="Roche">Roche</SelectItem>
+                                                        <SelectItem value="Abbott">Abbott</SelectItem>
+                                                        <SelectItem value="Elea">Elea</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
+                                        <FieldError errors={[errorsAdd.laboratory]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.dosage} className="gap-1">
+                                        <FieldLabel htmlFor="register-dosage">Dosis</FieldLabel>
+                                        <Input
+                                            id="register-dosage"
+                                            type="number"
+                                            {...registerAdd("dosage", { required: "La dosis es requerida", valueAsNumber: true })}
+                                            aria-invalid={!!errorsAdd.dosage}
+
+                                        />
+                                        <FieldError errors={[errorsAdd.dosage]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.magnitude} className="gap-1">
+                                        <FieldLabel htmlFor="register-magnitude">Magnitud</FieldLabel>
+                                        <Input
+                                            id="register-magnitude"
+                                            type="text"
+                                            {...registerAdd("magnitude", { required: "La magnitud es requerida" })}
+                                            aria-invalid={!!errorsAdd.magnitude}
+
+                                        />
+                                        <FieldError errors={[errorsAdd.magnitude]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.format} className="gap-1">
+                                        <FieldLabel htmlFor="register-format">Formato</FieldLabel>
+                                        <Controller
+                                            name="format"
+                                            control={controlAdd}
+                                            rules={{ required: "Selecciona el formato" }}
+                                            render={({ field }) => (
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <SelectTrigger className="h-12">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="Comprimidos">Comprimidos</SelectItem>
+                                                        <SelectItem value="Gotas">Gotas</SelectItem>
+                                                        <SelectItem value="Crema">Crema</SelectItem>
+                                                        <SelectItem value="Jarabe">Jarabe</SelectItem>
+                                                        <SelectItem value="Inyectable">Inyectable</SelectItem>
+                                                        <SelectItem value="Supositorio">Supositorio</SelectItem>
+                                                        <SelectItem value="Spray">Spray</SelectItem>
+                                                        <SelectItem value="Parche">Parche</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
+                                        <FieldError errors={[errorsAdd.format]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.quantity} className="gap-1">
+                                        <FieldLabel htmlFor="register-quantity">Cantidad</FieldLabel>
+                                        <Input
+                                            id="register-quantity"
+                                            type="number"
+                                            {...registerAdd("quantity", { required: "La cantidad es requerida", valueAsNumber: true })}
+                                            aria-invalid={!!errorsAdd.quantity}
+
+                                        />
+                                        <FieldError errors={[errorsAdd.quantity]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.price} className="gap-1">
+                                        <FieldLabel htmlFor="register-price">Precio</FieldLabel>
+                                        <Input
+                                            id="register-price"
+                                            type="number"
+                                            {...registerAdd("price", { required: "El precio es requerido", valueAsNumber: true })}
+                                            aria-invalid={!!errorsAdd.price}
+                                        />
+                                        <FieldError errors={[errorsAdd.price]} />
+                                    </Field>
+                                    <Field data-invalid={!!errorsAdd.img} className="gap-1">
+                                        <FieldLabel htmlFor="register-img">Imagen</FieldLabel>
+                                        <Input
+                                            id="register-img"
+                                            type="file"
+                                            accept="image/*"
+                                            {...registerAdd("img", { required: "La imagen es requerida" })}
+                                            aria-invalid={!!errorsAdd.img}
+                                        />
+                                        <FieldError errors={[errorsAdd.img]} />
+                                    </Field>
+                                </FieldGroup>
+                            </div>
+                            <div className="w-full flex justify-center mt-3">
+                                <DialogFooter className="w-full">
+                                    <Button type="submit" className="bg-green-500 min-[640px]:w-fit w-full">Agregar</Button>
+                                    <DialogClose asChild>
+                                        <Button variant="outline" className="min-[640px]:w-fit w-full">Cancelar</Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </div>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="grid grid-cols-1 min-[760px]:grid-cols-2 lg:grid-cols-3 min-[1400px]:grid-cols-4! gap-6">
@@ -224,14 +478,15 @@ const index = () => {
 
                             <div className="flex justify-between">
                                 <div className="flex items-center justify-center space-x-3">
-                                    <div className="w-20 h-20 md:w-30 md:h-30 lg:w-40 lg:h-40 bg-sky-200 rounded-lg">
+                                    <div className="w-25 h-25 md:w-30 md:h-30 lg:w-40 lg:h-40 bg-sky-200 rounded-lg">
                                         <img src={product.img} className="w-full h-full" />
                                     </div>
 
                                     <div className="flex flex-col justify-center space-y-1">
-                                        <p className="text-md font-semibold text-sky-800">{product.name}</p>
+                                        <p className="text-md font-semibold text-sky-800">{product.name} {product.dosage}{product.magnitude}</p>
+                                        <p className="text-md text-sky-600">Formato: {product.format}</p>
                                         <p className="text-md text-sky-400">Laboratorio: {product.laboratory}</p>
-                                        <p className="text-md text-sky-600">Cantidad: {product.quantity}</p>
+                                        <p className="text-md text-sky-400">Cantidad: {product.quantity}</p>
                                         <p className="font-semibold text-md text-sky-500">Precio: ${product.price.toFixed(2)}</p>
                                     </div>
                                 </div>
@@ -336,7 +591,7 @@ const index = () => {
                                             </Button>
                                         </DialogTrigger>
                                         <DialogContent>
-                                            <form onSubmit={handleSubmit(handleModify)}>
+                                            <form name="ModifyProductForm" onSubmit={handleSubmitModify(handleModify)} >
                                                 <DialogHeader>
                                                     <DialogTitle className="text-center text-chart-4/90 text-2xl">Modificar Producto</DialogTitle>
                                                     <DialogDescription className="text-center text-chart-4/80 text-md">
@@ -345,34 +600,31 @@ const index = () => {
                                                 </DialogHeader>
                                                 <div className="flex gap-6 items-start max-h-[50vh] overflow-y-auto">
                                                     <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                                                        <Field data-invalid={!!errors.name} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.name} className="gap-1">
                                                             <FieldLabel htmlFor="register-username">Nombre</FieldLabel>
                                                             <Input
                                                                 id="register-username"
-                                                                defaultValue={product.name}
-                                                                {...register("name", { required: "El nombre es requerido" })}
-                                                                aria-invalid={!!errors.name}
+                                                                {...registerModify("name", { required: "El nombre es requerido" })}
+                                                                aria-invalid={!!errorsModify.name}
                                                             />
-                                                            <FieldError errors={[errors.name]} />
+                                                            <FieldError errors={[errorsModify.name]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.description} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.description} className="gap-1">
                                                             <FieldLabel htmlFor="register-description">Descripción</FieldLabel>
                                                             <Input
                                                                 id="register-description"
-                                                                defaultValue={product.description}
-                                                                {...register("description", { required: "La descripción es requerida" })}
-                                                                aria-invalid={!!errors.description}
+                                                                {...registerModify("description", { required: "La descripción es requerida" })}
+                                                                aria-invalid={!!errorsModify.description}
 
                                                             />
-                                                            <FieldError errors={[errors.description]} />
+                                                            <FieldError errors={[errorsModify.description]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.category} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.category} className="gap-1">
                                                             <FieldLabel htmlFor="category">Categoria</FieldLabel>
                                                             <Controller
                                                                 name="category"
-                                                                control={control}
+                                                                control={controlModify}
                                                                 rules={{ required: "Selecciona la categoría" }}
-                                                                defaultValue={product.category}
                                                                 render={({ field }) => (
                                                                     <Select onValueChange={field.onChange} value={field.value}>
                                                                         <SelectTrigger className="h-12">
@@ -391,15 +643,14 @@ const index = () => {
                                                                     </Select>
                                                                 )}
                                                             />
-                                                            <FieldError errors={[errors.category]} />
+                                                            <FieldError errors={[errorsModify.category]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.laboratory} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.laboratory} className="gap-1">
                                                             <FieldLabel htmlFor="laboratory">Laboratorio</FieldLabel>
                                                             <Controller
                                                                 name="laboratory"
-                                                                control={control}
+                                                                control={controlModify}
                                                                 rules={{ required: "Selecciona el laboratorio" }}
-                                                                defaultValue={product.laboratory}
                                                                 render={({ field }) => (
                                                                     <Select onValueChange={field.onChange} value={field.value}>
                                                                         <SelectTrigger className="h-12">
@@ -417,66 +668,71 @@ const index = () => {
                                                                     </Select>
                                                                 )}
                                                             />
-                                                            <FieldError errors={[errors.laboratory]} />
+                                                            <FieldError errors={[errorsModify.laboratory]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.dosage} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.dosage} className="gap-1">
                                                             <FieldLabel htmlFor="register-dosage">Dosis</FieldLabel>
                                                             <Input
                                                                 id="register-dosage"
                                                                 type="number"
-                                                                defaultValue={product.dosage}
-                                                                {...register("dosage", { required: "La dosis es requerida", valueAsNumber: true })}
-                                                                aria-invalid={!!errors.dosage}
+                                                                {...registerModify("dosage", { required: "La dosis es requerida", valueAsNumber: true })}
+                                                                aria-invalid={!!errorsModify.dosage}
 
                                                             />
-                                                            <FieldError errors={[errors.dosage]} />
+                                                            <FieldError errors={[errorsModify.dosage]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.magnitude} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.magnitude} className="gap-1">
                                                             <FieldLabel htmlFor="register-magnitude">Magnitud</FieldLabel>
                                                             <Input
                                                                 id="register-magnitude"
                                                                 type="text"
-                                                                defaultValue={product.magnitude}
-                                                                {...register("magnitude", { required: "La magnitud es requerida" })}
-                                                                aria-invalid={!!errors.magnitude}
+                                                                {...registerModify("magnitude", { required: "La magnitud es requerida" })}
+                                                                aria-invalid={!!errorsModify.magnitude}
 
                                                             />
-                                                            <FieldError errors={[errors.magnitude]} />
+                                                            <FieldError errors={[errorsModify.magnitude]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.format} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.format} className="gap-1">
                                                             <FieldLabel htmlFor="register-format">Formato</FieldLabel>
-                                                            <Input
-                                                                id="register-format"
-                                                                type="text"
-                                                                defaultValue={product.format}
-                                                                {...register("format", { required: "El formato es requerido" })}
-                                                                aria-invalid={!!errors.format}
-
+                                                            <Controller
+                                                                name="format"
+                                                                control={controlModify}
+                                                                rules={{ required: "Selecciona el formato" }}
+                                                                render={({ field }) => (
+                                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                                        <SelectTrigger className="h-12">
+                                                                            <SelectValue />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="Comprimidos">Comprimidos</SelectItem>
+                                                                            <SelectItem value="Gotas">Gotas</SelectItem>
+                                                                            <SelectItem value="Crema">Crema</SelectItem>
+                                                                            <SelectItem value="Jarabe">Jarabe</SelectItem>
+                                                                            <SelectItem value="Inyectable">Inyectable</SelectItem>
+                                                                            <SelectItem value="Supositorio">Supositorio</SelectItem>
+                                                                            <SelectItem value="Spray">Spray</SelectItem>
+                                                                            <SelectItem value="Parche">Parche</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                )}
                                                             />
-                                                            <FieldError errors={[errors.format]} />
+                                                            <FieldError errors={[errorsModify.format]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.quantity} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.quantity} className="gap-1">
                                                             <FieldLabel htmlFor="register-quantity">Cantidad</FieldLabel>
                                                             <Input
                                                                 id="register-quantity"
                                                                 type="number"
-                                                                defaultValue={product.quantity}
-                                                                {...register("quantity", { required: "La cantidad es requerida", valueAsNumber: true })}
-                                                                aria-invalid={!!errors.quantity}
+                                                                {...registerModify("quantity", { required: "La cantidad es requerida", valueAsNumber: true })}
+                                                                aria-invalid={!!errorsModify.quantity}
 
                                                             />
-                                                            <FieldError errors={[errors.quantity]} />
+                                                            <FieldError errors={[errorsModify.quantity]} />
                                                         </Field>
-                                                        <Field data-invalid={!!errors.price} className="gap-1">
+                                                        <Field data-invalid={!!errorsModify.price} className="gap-1">
                                                             <FieldLabel htmlFor="register-price">Precio</FieldLabel>
-                                                            <Input
-                                                                id="register-price"
-                                                                type="number"
-                                                                defaultValue={product.price}
-                                                                {...register("price", { required: "El precio es requerido", valueAsNumber: true })}
-                                                                aria-invalid={!!errors.price}
-                                                            />
-                                                            <FieldError errors={[errors.price]} />
+                                                            <Input id="register-price" type="number" {...registerModify("price", { required: "El precio es requerido", valueAsNumber: true })} aria-invalid={!!errorsModify.price} />
+                                                            <FieldError errors={[errorsModify.price]} />
                                                         </Field>
                                                     </FieldGroup>
                                                     <div className="flex justify-center items-center">
@@ -484,14 +740,17 @@ const index = () => {
                                                             src={product.img}
                                                             className="w-32 h-32 object-cover rounded-lg"
                                                         />
-                                                    </div>
 
+                                                    </div>
                                                 </div>
                                                 <div className="w-full flex justify-center mt-3">
                                                     <DialogFooter className="w-full">
                                                         <Button type="submit" className="bg-chart-4/90 min-[640px]:w-fit w-full">Modificar</Button>
                                                         <DialogClose asChild>
-                                                            <Button variant="outline" className="min-[640px]:w-fit w-full">Cancelar</Button>
+                                                            <Button variant="outline" className="min-[640px]:w-fit w-full" onClick={() => {
+                                                                resetModify()
+                                                                setOpenModifyDialogId(null)
+                                                            }}>Cancelar</Button>
                                                         </DialogClose>
                                                     </DialogFooter>
                                                 </div>
