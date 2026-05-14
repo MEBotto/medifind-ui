@@ -2,9 +2,13 @@ import { Button } from "../ui/button"
 import { ShoppingCart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
-const index = () => {
+type CartProps = {
+    cartItemsCount: number;
+};
+
+const index = ({ cartItemsCount }: CartProps) => {
+
     const navigate = useNavigate()
-    const cartItemsCount = 3
 
     return (
         <div className="hidden min-[375px]:flex items-center">
@@ -18,7 +22,7 @@ const index = () => {
                 </Button>
 
                 {cartItemsCount > 0 && (
-                    <div className="absolute -bottom-1 -left-1 bg-sky-500 text-white text-[11px] font-bold leading-none min-w-5 h-5 px-1 rounded-full flex items-center justify-center">                        {cartItemsCount}
+                    <div className="absolute -bottom-1 -left-1 bg-sky-500 text-white text-[11px] font-bold leading-none min-w-5 h-5 px-1 rounded-full flex items-center justify-center">{cartItemsCount}
                     </div>
                 )}
             </div>

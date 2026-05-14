@@ -8,10 +8,17 @@ import {
 import { Search, Package } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useOutletContext } from "react-router-dom"
+
+type OutletContextType = {
+    handleAddToCart: () => void;
+};
+
 
 
 const DashboardIndex = () => {
+
+    const { handleAddToCart } = useOutletContext<OutletContextType>();
 
     const [products] = useState([
         {
@@ -83,9 +90,8 @@ const DashboardIndex = () => {
             p.pharmacy.toLowerCase().includes(searchTerm.toLowerCase())
         )
     })
-    const handleAddToCart = (productId: string) => {
-        console.log("Product added to cart:", productId);
-    }
+
+
     return (
         <div className="space-y-8">
             <div className="bg-gradient-to-r from-sky-400 to-sky-500/80 rounded-xl p-8 text-white">
@@ -131,17 +137,17 @@ const DashboardIndex = () => {
                                         <div className="flex flex-col justify-center space-y-1">
                                             <p className="text-2xl font-semibold text-sky-800">{product.name} {product.laboratory} {product.dosage}{product.magnitude} </p>
                                             <p className="text-md text-sky-600 mt-2">{product.description}</p>
-                                            <p className="text-xl text-sky-400 mt-2">Farmacia {product.pharmacy}</p>
-                                            <p className="font-semibold text-2xl text-sky-500 mt-2">${product.price.toFixed(2)}</p>
+                                            <p className="text-xl text-chart-4/80 mt-2">Farmacia {product.pharmacy}</p>
+                                            <p className="font-semibold text-2xl text-green-600 mt-2">${product.price.toFixed(2)}</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="transition-all duration-200 flex flex-col items-center gap-3 pt-3 min-[1700px]:flex-row min-[1700px]:justify-between">
-                                    <Button className="bg-green-400 hover:bg-green-500 text-white w-full" onClick={(e) => {
+                                    <Button className="bg-sky-400 hover:bg-sky-500 text-white w-full" onClick={(e) => {
                                         e.stopPropagation()
                                         e.preventDefault()
-                                        handleAddToCart(product.id)
+                                        handleAddToCart()
                                     }}>
                                         Agregar al carrito
                                     </Button>
