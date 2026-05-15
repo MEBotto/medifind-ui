@@ -121,38 +121,41 @@ const index = () => {
 
 
     return (
-        <div className="flex gap-6 items-start">
+        <div className="flex flex-col min-[950px]:flex-row gap-6 items-start pb-84 min-[950px]:pb-0">
 
             {/* LEFT SIDE - PRODUCTS */}
-            <div className="flex-1 grid grid-cols-1 gap-6">
+            <div className="flex-1 grid grid-cols-1 gap-6 w-full">
                 {products.map((product) => (
                     <Card
                         key={product.id}
-                        className="bg-linear-to-br from-sky-50 to-sky-100 border-sky-200 hover:shadow-lg transition-all duration-200"
+                        className="bg-linear-to-br from-sky-50 to-sky-100 border-sky-300 hover:shadow-lg transition-all duration-200 pt-0"
                     >
 
-                        <CardHeader className="border-b border-sky-200 mb-0">
-                            <div className="flex flex-start items-center">
+                        <CardHeader className="pb-0 border-b border-sky-300 flex justify-left">
+                            <div className="text-2xl font-semibold translate-y-2">
                                 <Link
                                     to={`/dashboard/pharmacies/${product.pharmacy}`}
-                                    key={product.id}>
-                                    <p className="text-2xl text-sky-500 mt-2 font-semibold">Productos de Farmacia {product.pharmacy} {'>'}</p>
+                                    key={product.id}
+                                >
+                                    <p className="text-2xl text-sky-500 mt-2 font-semibold">
+                                        Productos de Farmacia {product.pharmacy} {'>'}
+                                    </p>
                                 </Link>
                             </div>
                         </CardHeader>
 
                         <CardContent className="space-y-3">
 
-                            <div className="flex justify-between items-center gap-6">
+                            <div className="flex flex-col min-[570px]:flex-row justify-between gap-6">
 
                                 {/* LEFT SIDE */}
-                                <div className="flex items-center gap-4 flex-1">
+                                <div className="flex flex-col min-[570px]:flex-row items-center gap-4 flex-1">
 
                                     {/* IMAGE */}
                                     <Link
                                         to={`/dashboard/pharmacies/${product.pharmacy}/products/${product.id}`}
                                     >
-                                        <div className="w-40 h-40 bg-sky-200 rounded-lg shrink-0">
+                                        <div className="w-40 h-40 bg-sky-200 rounded-lg shrink-0 mx-auto">
                                             <img
                                                 src={product.img}
                                                 className="w-full h-full object-cover"
@@ -161,7 +164,7 @@ const index = () => {
                                     </Link>
 
                                     {/* MIDDLE CONTENT */}
-                                    <div className="flex flex-col justify-between h-full space-y-4 flex-1">
+                                    <div className="flex flex-col justify-between h-full space-y-4 flex-1 w-full">
 
                                         <div>
                                             <p className="text-xl font-semibold text-sky-700">
@@ -173,62 +176,63 @@ const index = () => {
                                             </p>
                                         </div>
 
-                                        {/* BUTTONS */}
-                                        <div className="flex items-center space-x-3 pt-2">
-                                            <Button
-                                                variant="outline"
-                                                size="icon"
-                                                onClick={() => handleRemove(product.id)}
-                                            >
-                                                -
-                                            </Button>
+                                        {/* MOBILE BOTTOM ROW */}
+                                        <div className="flex justify-between items-center w-full pt-2">
 
-                                            <Input
-                                                type="number"
-                                                min={0}
-                                                value={product.quantity}
-                                                onChange={(e) =>
-                                                    handleChange(product.id, Number(e.target.value))
-                                                }
-                                                className="w-16 text-center"
-                                            />
+                                            {/* BUTTONS */}
+                                            <div className="flex items-center space-x-3">
+                                                <Button
+                                                    variant="outline"
+                                                    size="icon"
+                                                    onClick={() => handleRemove(product.id)}
+                                                >
+                                                    -
+                                                </Button>
 
-                                            <Button
-                                                variant="default"
-                                                size="icon"
-                                                onClick={() => handleAdd(product.id)}
-                                            >
-                                                +
-                                            </Button>
+                                                <Input
+                                                    type="number"
+                                                    min={0}
+                                                    value={product.quantity}
+                                                    onChange={(e) =>
+                                                        handleChange(product.id, Number(e.target.value))
+                                                    }
+                                                    className="w-16 text-center"
+                                                />
+
+                                                <Button
+                                                    variant="default"
+                                                    size="icon"
+                                                    onClick={() => handleAdd(product.id)}
+                                                >
+                                                    +
+                                                </Button>
+                                            </div>
+
+                                            {/* PRICES */}
+                                            <div className="flex flex-col items-end justify-center">
+
+                                                <p className="text-lg text-muted-foreground line-through">
+                                                    $
+                                                    {(product.price * product.quantity)}
+                                                </p>
+
+                                                <p className="text-2xl font-semibold text-green-600">
+                                                    $
+                                                    {(
+                                                        (product.price -
+                                                            product.price * product.discount) *
+                                                        product.quantity
+                                                    )}
+                                                </p>
+
+                                                <p className="text-sm text-sky-500 font-semibold mt-1">
+                                                    {product.discount * 100} % Descuento
+                                                </p>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* RIGHT SIDE - PRICES */}
-                                <div className="flex flex-col items-end justify-center min-w-[140px]">
-
-                                    {/* ORIGINAL PRICE */}
-                                    <p className="text-lg text-muted-foreground line-through">
-                                        $
-                                        {(product.price * product.quantity)}
-                                    </p>
-
-                                    {/* DISCOUNTED PRICE */}
-                                    <p className="text-2xl font-semibold text-green-600">
-                                        $
-                                        {(
-                                            (product.price -
-                                                product.price * product.discount) *
-                                            product.quantity
-                                        )}
-                                    </p>
-
-                                    {/* DISCOUNT PERCENT */}
-                                    <p className="text-sm text-sky-500 font-semibold mt-1">
-                                        {product.discount * 100} % Descuento
-                                    </p>
-                                </div>
-
                             </div>
 
                         </CardContent>
@@ -237,10 +241,13 @@ const index = () => {
                 }
             </div >
             {/* RIGHT SIDE - SUMMARY */}
-            < div className="w-[350px] sticky top-4" >
-                <Card className="bg-linear-to-br from-sky-50 to-sky-100 border-sky-200 hover:shadow-lg transition-all duration-200">
-                    <CardHeader className="border-b border-sky-200 py-3 px-4">
-                        <div className="flex justify-left items-center text-2xl font-semibold">Resumen de Compra</div>
+            <div
+                className="w-full min-[950px]:w-[350px] max-[950px]:fixed max-[950px]:bottom-0 max-[950px]:left-0 max-[950px]:right-0 max-[950px]:z-50 max-[950px]:p-4 min-[950px]:sticky min-[950px]:top-4">
+                <Card className="bg-linear-to-br from-sky-100 to-sky-200 border-sky-500 hover:shadow-lg transition-all duration-200 pt-0 max-[950px]:rounded-t-2xl">
+                    <CardHeader className="pb-0 border-b border-sky-300 flex justify-left">
+                        <div className="text-2xl text-sky-400 font-semibold translate-y-3">
+                            Resumen de Compra
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
 

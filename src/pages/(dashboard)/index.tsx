@@ -135,15 +135,15 @@ const DashboardIndex = () => {
                                     <div className="flex items-center justify-center space-x-3">
 
                                         <div className="flex flex-col justify-center space-y-1">
-                                            <p className="text-2xl font-semibold text-sky-800">{product.name} {product.laboratory} {product.dosage}{product.magnitude} </p>
-                                            <p className="text-md text-sky-600 mt-2">{product.description}</p>
+                                            <p className="text-2xl font-semibold text-sky-800  h-[60px] line-clamp-2">{product.name} {product.laboratory} {product.dosage}{product.magnitude} </p>
+                                            <p className="text-md text-sky-600 mt-2 h-[60px] line-clamp-2">{product.description}</p>
                                             <p className="text-xl text-chart-4/80 mt-2">Farmacia {product.pharmacy}</p>
                                             <p className="font-semibold text-2xl text-green-600 mt-2">${product.price.toFixed(2)}</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="transition-all duration-200 flex flex-col items-center gap-3 pt-3 min-[1700px]:flex-row min-[1700px]:justify-between">
+                                <div className="mt-auto pt-4">
                                     <Button className="bg-sky-400 hover:bg-sky-500 text-white w-full" onClick={(e) => {
                                         e.stopPropagation()
                                         e.preventDefault()
