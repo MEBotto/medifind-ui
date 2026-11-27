@@ -2,11 +2,12 @@ import { Outlet, Navigate } from "react-router-dom";
 import Sidebar from "@/components/sidebar";
 import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { useAppSelector } from "@/app/hooks";
 import { useState } from "react";
 
 
 const Layout = () => {
-    const isAuth = true;
+    const isAuth = useAppSelector(state => !!state.auth.session);
 
     const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -15,7 +16,7 @@ const Layout = () => {
     };
 
     if (!isAuth) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/login" replace />;
     }
 
     return (
