@@ -32,11 +32,13 @@ export default function RegisterForm() {
         register,
         control,
         getValues,
+        setError,
         handleSubmit,
         formState: { errors },
     } = useForm<RegisterForm>()
 
     const onSubmit = async (data: RegisterForm) => {
+        if (data.password !== data.confirmPassword) { setError("confirmPassword", { message: "Las contraseñas no coinciden" }); return }
         try {
             const session = await registerAccount({
                 username: data.username, email: data.email, password: data.password,
