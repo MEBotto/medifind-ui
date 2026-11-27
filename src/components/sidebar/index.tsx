@@ -13,11 +13,15 @@ import { useSidebar } from "../ui/sidebar"
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
 
 import { Home, User, Heart, ShoppingBag, FileText, LogOut, ShoppingCart, Box } from "lucide-react"
+import { useAppDispatch } from "@/app/hooks"
+import { clearSession } from "@/features/auth/authSlice"
+import { baseApi } from "@/services/baseApi"
 import { Link, useNavigate } from "react-router-dom"
 
 const index = () => {
 
     const navigate = useNavigate()
+    const dispatch = useAppDispatch()
     const { setOpen } = useSidebar()
 
     const sidebarItems = [
@@ -31,7 +35,9 @@ const index = () => {
     ]
 
     const handleLogout = () => {
-        navigate("/login")
+        dispatch(clearSession())
+        dispatch(baseApi.util.resetApiState())
+        navigate("/login", { replace: true })
     }
 
     return (
