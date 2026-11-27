@@ -1,4 +1,8 @@
 
+import { useAppDispatch } from "@/app/hooks"
+import { setSession } from "@/features/auth/authSlice"
+import { useRegisterMutation, authError } from "@/features/auth/authApi"
+import { toast } from "sonner"
 import { Controller, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { Input } from "@/components/ui/input"
@@ -11,6 +15,7 @@ interface RegisterForm {
     username: string
     email: string
     password: string
+    confirmPassword: string
     name: string
     surname: string
     identificationType: string
@@ -21,17 +26,27 @@ interface RegisterForm {
 
 export default function RegisterForm() {
     const router = useNavigate()
+    const dispatch = useAppDispatch()
+    const [registerAccount, { isLoading, reset }] = useRegisterMutation()
     const {
         register,
         control,
+        getValues,
         handleSubmit,
         formState: { errors },
     } = useForm<RegisterForm>()
 
-    const onSubmit = (data: RegisterForm) => {
-        console.log("[v0] Register attempt:", data)
-        // Simulate register success and redirect to dashboard or login
-        router("/dashboard")
+    const onSubmit = async (data: RegisterForm) => {
+        try {
+            const session = await registerAccount({
+                username: data.username, email: data.email, password: data.password,
+                firstName: data.name, lastName: data.surname,
+            }).unwrap()
+            dispatch(setSession(session))
+            toast.info("La información de documento y cobertura todavía no se guarda en la API.")
+            router("/dashboard", { replace: true })
+        } catch (error) { toast.error(authError(error)) }
+        finally { reset() }
     }
 
     const handleLoginRedirect = () => {
@@ -53,7 +68,7 @@ export default function RegisterForm() {
                         <Input
                             id="register-username"
                             placeholder="Usuario"
-                            {...register("username", { required: "El usuario es requerido" })}
+                            {...register("username", { required: "El usuario es requerido", minLength: { value: 3, message: "Mínimo 3 caracteres" } })}
                             aria-invalid={!!errors.username}
                         />
                         <FieldError errors={[errors.username]} />
@@ -81,21 +96,21 @@ export default function RegisterForm() {
                             id="register-password"
                             type="password"
                             placeholder="Contraseña"
-                            {...register("password", { required: "La contraseña es requerida" })}
+                            {...register("password", { required: "La contraseña es requerida", minLength: { value: 6, message: "Mínimo 6 caracteres" } })}
                             aria-invalid={!!errors.password}
                         />
                         <FieldError errors={[errors.password]} />
                     </Field>
-                    <Field data-invalid={!!errors.password} className="gap-1">
+                    <Field data-invalid={!!errors.confirmPassword} className="gap-1">
                         <FieldLabel htmlFor="register-password-confirmation">Confirmar Contraseña</FieldLabel>
                         <Input
                             id="register-password-confirmation"
                             type="password"
                             placeholder="Confirmar Contraseña"
-                            {...register("password", { required: "La contraseña es requerida" })}
-                            aria-invalid={!!errors.password}
+                            {...register("confirmPassword", { required: "Confirmá la contraseña", validate: value => value === getValues("password") || "Las contraseñas no coinciden" })}
+                            aria-invalid={!!errors.confirmPassword}
                         />
-                        <FieldError errors={[errors.password]} />
+                        <FieldError errors={[errors.confirmPassword]} />
                     </Field>
                     <Field data-invalid={!!errors.name} className="gap-1">
                         <FieldLabel htmlFor="register-name">Nombre</FieldLabel>
@@ -200,7 +215,7 @@ export default function RegisterForm() {
                         <FieldError errors={[errors.insurancePlan]} />
                     </Field>
                     <Field orientation="vertical" className="md:col-span-2">
-                        <Button className="hover:bg-chart-5 mt-5" type="submit">Registrarse</Button>
+                        <Button className="hover:bg-chart-5 mt-5" type="submit" disabled={isLoading}>Registrarse</Button>
                         <Button type="button" variant="outline" className="bg-card/95 border-0 hover:bg-chart-4" onClick={handleLoginRedirect}>
                             ¿Ya tienes cuenta? Iniciar Sesión
                         </Button>
