@@ -7,7 +7,8 @@ import { Suspense, useState } from "react";
 
 
 const Layout = () => {
-    const isAuth = useAppSelector(state => !!state.auth.session);
+    const { session, initialized } = useAppSelector(state => state.auth);
+    const isAuth = !!session;
 
     const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -15,6 +16,7 @@ const Layout = () => {
         setCartItemsCount((prev) => prev + 1);
     };
 
+    if (!initialized) return null;
     if (!isAuth) {
         return <Navigate to="/login" replace />;
     }
