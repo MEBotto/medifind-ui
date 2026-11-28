@@ -3,7 +3,7 @@ import Sidebar from "@/components/sidebar";
 import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAppSelector } from "@/app/hooks";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 
 const Layout = () => {
@@ -28,11 +28,13 @@ const Layout = () => {
                     <Header cartItemsCount={cartItemsCount} />
 
                     <section className="p-4">
+                        <Suspense fallback={null}>
                         <Outlet
                             context={{
                                 handleAddToCart,
                             }}
                         />
+                        </Suspense>
                     </section>
                 </div>
             </SidebarProvider>
