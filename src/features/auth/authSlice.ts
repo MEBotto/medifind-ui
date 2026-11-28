@@ -1,0 +1,22 @@
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
+export interface AuthUser { id: string; username: string; email: string; role: string | null }
+export interface Session { user: AuthUser; token: string }
+export interface AuthState { session: Session | null; initialized: boolean }
+export function tokenExpiry(token: string): number {
+  try {
+    const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const exp = JSON.parse(atob(payload)).exp;
+    return typeof exp === 'number' && Number.isFinite(exp) ? exp * 1000 : 0;
+  } catch { return 0; }
+}
+const initialState: AuthState = { session: null, initialized: false };
+const slice = createSlice({
+  name: 'auth', initialState,
+  reducers: {
+    setSession: (state, action: PayloadAction<Session>) => { state.session = action.payload; state.initialized = true; },
+    clearSession: state => { state.session = null; state.initialized = true; },
+  },
+});
+export const { setSession, clearSession } = slice.actions;
+export default slice.reducer;

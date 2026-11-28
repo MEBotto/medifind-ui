@@ -1,4 +1,5 @@
 import { useState } from "react"
+import type { LabelProps } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -6,7 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingUp, TrendingDown, Package, ShoppingCart, Download, Calendar } from "lucide-react"
 
 
-const index = () => {
+const ReportsPage = () => {
 
     const pedidos = [
         { id: 1, category: "Medicamentos", month: "Ene", value: 150, color: "#10b981" },
@@ -73,11 +74,27 @@ const index = () => {
     const spendingTrend = lastMonthSales > previousMonthSales ? "up" : "down"
     const trendPercentage = Math.abs(((lastMonthSales - previousMonthSales) / previousMonthSales) * 100)
 
-    const renderCustomBarLabelSales = ({ x, y, width, value }: any) => {
+    const renderCustomBarLabelSales = ({ x, y, width, value }: LabelProps) => {
+        if (
+            typeof x !== "number" ||
+            typeof y !== "number" ||
+            typeof width !== "number" ||
+            typeof value !== "number"
+        ) {
+            return <g />
+        }
         return <text x={x + width / 2} y={y} fill="#666" textAnchor="middle" dy={-6}>{`$${value}`}</text>;
     };
 
-    const renderCustomBarLabelOrders = ({ x, y, width, value }: any) => {
+    const renderCustomBarLabelOrders = ({ x, y, width, value }: LabelProps) => {
+        if (
+            typeof x !== "number" ||
+            typeof y !== "number" ||
+            typeof width !== "number" ||
+            typeof value !== "number"
+        ) {
+            return <g />
+        }
         return <text x={x + width / 2} y={y} fill="#666" textAnchor="middle" dy={-6}>{`${value}`}</text>;
     };
 
@@ -305,4 +322,4 @@ const index = () => {
     )
 }
 
-export default index
+export default ReportsPage

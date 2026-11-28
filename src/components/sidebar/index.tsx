@@ -8,16 +8,21 @@ import {
     SidebarMenuButton,
 } from "../ui/sidebar"
 import MediFindLogo from "../ui/MediFindLogo"
-import { useSidebar } from "../ui/sidebar"
+import { useSidebar } from "../ui/sidebar-context"
 
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
 
 import { Home, User, Heart, ShoppingBag, FileText, LogOut, ShoppingCart, Box } from "lucide-react"
+import { useAppDispatch } from "@/app/hooks"
+import { clearSession } from "@/features/auth/authSlice"
+import { baseApi } from "@/services/baseApi"
+import { toast } from "sonner"
 import { Link, useNavigate } from "react-router-dom"
 
-const index = () => {
+const AppSidebar = () => {
 
     const navigate = useNavigate()
+    const dispatch = useAppDispatch()
     const { setOpen } = useSidebar()
 
     const sidebarItems = [
@@ -30,8 +35,23 @@ const index = () => {
         { icon: FileText, label: "Informe", href: "/dashboard/reports" },
     ]
 
-    const handleLogout = () => {
-        navigate("/login")
+    const handleLogout = async () => {
+        try {
+            const run = async () => {
+                const response = await fetch((import.meta.env.VITE_API_URL || "/api").replace(/\/$/, "") + "/auth/logout", {
+                    method: "POST", credentials: "include", signal: AbortSignal.timeout(15000),
+                })
+                if (!response.ok) throw new Error("Logout failed")
+                dispatch(clearSession())
+            }
+            if (navigator.locks) await navigator.locks.request("medifind-auth", run)
+            else await run()
+        } catch {
+            toast.error("No se pudo cerrar la sesión. Intentá nuevamente.")
+            return
+        }
+        dispatch(baseApi.util.resetApiState())
+        navigate("/login", { replace: true })
     }
 
     return (
@@ -101,4 +121,4 @@ const index = () => {
     )
 }
 
-export default index
+export default AppSidebar

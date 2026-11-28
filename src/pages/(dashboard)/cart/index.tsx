@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-const index = () => {
+const CartPage = () => {
 
 
     const [products, setProducts] = useState([
@@ -301,4 +301,4 @@ const index = () => {
     )
 }
 
-export default index
+export default CartPage

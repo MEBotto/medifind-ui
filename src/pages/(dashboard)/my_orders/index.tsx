@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Package, Clock, CheckCircle, XCircle, Eye, Download } from "lucide-react"
 
-const index = () => {
+const MyOrdersPage = () => {
     const orders = [
         {
             id: "ORD-001",
@@ -210,4 +210,4 @@ const index = () => {
     )
 }
 
-export default index
+export default MyOrdersPage

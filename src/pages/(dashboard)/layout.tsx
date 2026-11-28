@@ -2,11 +2,13 @@ import { Outlet, Navigate } from "react-router-dom";
 import Sidebar from "@/components/sidebar";
 import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useState } from "react";
+import { useAppSelector } from "@/app/hooks";
+import { Suspense, useState } from "react";
 
 
 const Layout = () => {
-    const isAuth = true;
+    const { session, initialized } = useAppSelector(state => state.auth);
+    const isAuth = !!session;
 
     const [cartItemsCount, setCartItemsCount] = useState(0);
 
@@ -14,8 +16,9 @@ const Layout = () => {
         setCartItemsCount((prev) => prev + 1);
     };
 
+    if (!initialized) return null;
     if (!isAuth) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/login" replace />;
     }
 
     return (
@@ -27,11 +30,13 @@ const Layout = () => {
                     <Header cartItemsCount={cartItemsCount} />
 
                     <section className="p-4">
+                        <Suspense fallback={null}>
                         <Outlet
                             context={{
                                 handleAddToCart,
                             }}
                         />
+                        </Suspense>
                     </section>
                 </div>
             </SidebarProvider>

@@ -3,9 +3,8 @@ import {
     Card,
     CardContent,
     CardHeader,
-    CardTitle,
 } from "@/components/ui/card"
-import { Search, Package } from "lucide-react"
+import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { Link, useOutletContext } from "react-router-dom"
@@ -94,7 +93,7 @@ const DashboardIndex = () => {
 
     return (
         <div className="space-y-8">
-            <div className="bg-gradient-to-r from-sky-400 to-sky-500/80 rounded-xl p-8 text-white">
+            <div className="bg-linear-to-r from-sky-400 to-sky-500/80 rounded-xl p-8 text-white">
                 <h1 className="text-3xl font-bold mb-2">Bienvenido a MediFind</h1>
                 <p className="text-sky-100 text-lg">Encuentra medicamentos y farmacias cerca de ti</p>
 

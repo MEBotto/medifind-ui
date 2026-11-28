@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Heart, Search, MapPin, Clock, Phone, Star } from "lucide-react"
 
 
-const index = () => {
+const PharmaciesPage = () => {
     interface Pharmacy {
         id: number
         name: string
@@ -214,4 +214,4 @@ const index = () => {
 }
 
 
-export default index
+export default PharmaciesPage

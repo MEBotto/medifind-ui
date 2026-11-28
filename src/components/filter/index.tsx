@@ -13,7 +13,7 @@ import {
     FilterIcon,
 } from "lucide-react"
 
-const index = () => {
+const Filter = () => {
     return (
         <div className="flex items-center justify-center">
             <DropdownMenu>
@@ -43,4 +43,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Filter

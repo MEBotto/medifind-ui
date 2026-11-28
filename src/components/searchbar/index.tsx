@@ -1,7 +1,7 @@
 import { Search } from "lucide-react"
 import { Input } from "../ui/input"
 
-const index = () => {
+const Searchbar = () => {
     return (
         <div className="relative w-full ml-3">
             <Input
@@ -13,4 +13,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Searchbar
