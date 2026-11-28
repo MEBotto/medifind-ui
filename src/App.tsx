@@ -14,6 +14,9 @@ const Cart = lazy(() => import("./pages/(dashboard)/cart"));
 const MyProducts = lazy(() => import("./pages/(dashboard)/my_products"));
 
 
+const ProductDetail = lazy(() => import('./pages/(dashboard)/products/detail'));
+const ListingDetail = lazy(() => import('./pages/(dashboard)/listings/detail'));
+
 function App() {
   return (
     <>
@@ -23,6 +26,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<DashboardLayout />} >
           <Route index element={<DashboardIndex />} />
+          <Route path="products/:productId" element={<ProductDetail />} />
+          <Route path="listings/:listingId" element={<ListingDetail />} />
           <Route path="account" element={<Account />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="orders" element={<Orders />} />
