@@ -2,26 +2,10 @@ import { useState } from 'react';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useAppSelector } from '@/app/hooks';
 import { useGetMyOrdersQuery, useGetMyOrderQuery } from './ordersApi';
-import type { Order, OrderState } from './orderTypes';
 
-export type OrderStatusFilter = OrderState | 'all';
-export type OrderSort = 'newest' | 'oldest';
-
-export function filterOrders(
-  orders: readonly Order[],
-  search: string,
-  status: OrderStatusFilter,
-  sort: OrderSort = 'newest',
-): Order[] {
-  const term = search.trim().toLowerCase();
-  return orders.filter(order =>
-    (status === 'all' || order.state === status) &&
-    (!term || order.id.toLowerCase().includes(term) || String(order.number).includes(term)),
-  ).sort((a, b) => {
-    const difference = Date.parse(a.date) - Date.parse(b.date);
-    return (sort === 'newest' ? -difference : difference) || a.id.localeCompare(b.id);
-  });
-}
+import { filterOrders, type OrderStatusFilter, type OrderSort } from './filterOrders';
+export { filterOrders } from './filterOrders';
+export type { OrderStatusFilter, OrderSort } from './filterOrders';
 
 export function useMyOrders() {
   const authenticated = useAppSelector(state => Boolean(state.auth.session));
