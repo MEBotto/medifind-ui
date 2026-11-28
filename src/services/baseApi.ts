@@ -54,4 +54,11 @@ const baseQuery: Query = async (args, api, options) => {
   if (api.signal.aborted || current(api)?.user.id !== session.user.id) return result;
   return rawQuery(args, api, options);
 };
-export const baseApi = createApi({ reducerPath: 'api', baseQuery, endpoints: () => ({}) });
+export const baseApi = createApi({ reducerPath: 'api', baseQuery, endpoints: builder => ({
+  renewSession: builder.mutation<boolean, void>({
+    queryFn: async (_arg, api, options) => {
+      const token = current(api)?.token;
+      return { data: token ? await refresh(api, options, token) : false };
+    },
+  }),
+}) });
