@@ -6,6 +6,7 @@ import type { AuthState } from '@/features/auth/authSlice';
 const rawQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL || '/api',
   timeout: 15000,
+  credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as { auth: AuthState }).auth.session?.token;
     if (token) headers.set('Authorization', `Bearer ${token}`);
