@@ -6,7 +6,7 @@ type CartProps = {
     cartItemsCount: number;
 };
 
-const index = ({ cartItemsCount }: CartProps) => {
+const Cart = ({ cartItemsCount }: CartProps) => {
 
     const navigate = useNavigate()
 
@@ -30,4 +30,4 @@ const index = ({ cartItemsCount }: CartProps) => {
     )
 }
 
-export default index
+export default Cart

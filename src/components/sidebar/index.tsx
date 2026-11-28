@@ -8,7 +8,7 @@ import {
     SidebarMenuButton,
 } from "../ui/sidebar"
 import MediFindLogo from "../ui/MediFindLogo"
-import { useSidebar } from "../ui/sidebar"
+import { useSidebar } from "../ui/sidebar-context"
 
 import { Collapsible, CollapsibleContent } from "../ui/collapsible"
 
@@ -18,7 +18,7 @@ import { clearSession } from "@/features/auth/authSlice"
 import { baseApi } from "@/services/baseApi"
 import { Link, useNavigate } from "react-router-dom"
 
-const index = () => {
+const AppSidebar = () => {
 
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
@@ -107,4 +107,4 @@ const index = () => {
     )
 }
 
-export default index
+export default AppSidebar

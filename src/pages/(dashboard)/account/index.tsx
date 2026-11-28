@@ -44,7 +44,7 @@ const mockUser: UserProfile = {
     joinDate: "2024-01-15",
 }
 
-const index = () => {
+const AccountPage = () => {
     const [user, setUser] = useState(mockUser)
     const [isEditing, setIsEditing] = useState(false)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
@@ -352,4 +352,4 @@ const index = () => {
     )
 }
 
-export default index
+export default AccountPage

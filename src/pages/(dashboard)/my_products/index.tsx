@@ -18,7 +18,6 @@ import {
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Controller, useForm } from "react-hook-form"
-import { useEffect } from "react"
 
 interface ModifyProductForm {
     name: string
@@ -49,7 +48,7 @@ interface AddProductForm {
 }
 
 
-const index = () => {
+const MyProductsPage = () => {
 
     const [products, setProducts] = useState([
         {
@@ -216,11 +215,14 @@ const index = () => {
         resetModify()
     }
 
-    useEffect(() => {
-        if (!openModifyDialogId) return
-
-        const product = products.find(p => p.id === openModifyDialogId)
-        if (!product) return
+    const handleOpenModifyDialog = (
+        open: boolean,
+        product: AddProductForm
+    ) => {
+        if (!open) {
+            setOpenModifyDialogId(null)
+            return
+        }
 
         resetModify({
             name: product.name,
@@ -234,7 +236,9 @@ const index = () => {
             quantity: product.quantity,
             price: product.price,
         })
-    }, [openModifyDialogId])
+
+        setOpenModifyDialogId(product.id)
+    }
 
     const handleAddProduct = (data: AddProductForm) => {
         setProducts([...products, data])
@@ -583,7 +587,7 @@ const index = () => {
                                     <Dialog
                                         open={openModifyDialogId === product.id}
                                         onOpenChange={(open) =>
-                                            setOpenModifyDialogId(open ? product.id : null)
+                                            handleOpenModifyDialog(open, product)
                                         }>
                                         <DialogTrigger asChild>
                                             <Button className="ml-3 bg-chart-4/90">
@@ -768,4 +772,4 @@ const index = () => {
     )
 }
 
-export default index
+export default MyProductsPage

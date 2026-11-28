@@ -1,7 +1,7 @@
-const index = () => {
+const CheckoutPage = () => {
     return (
         <div>checkout</div>
     )
 }
 
-export default index
+export default CheckoutPage

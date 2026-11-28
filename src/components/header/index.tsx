@@ -3,13 +3,14 @@ import ThemeToggle from "../ui/theme-toggle"
 import SearchBar from "../searchbar"
 import Filter from "../filter"
 import Cart from "../cart"
-import { SidebarTrigger, useSidebar } from "../ui/sidebar"
+import { SidebarTrigger } from "../ui/sidebar"
+import { useSidebar } from "../ui/sidebar-context"
 
 type HeaderProps = {
     cartItemsCount: number;
 };
 
-const index = ({ cartItemsCount }: HeaderProps) => {
+const Header = ({ cartItemsCount }: HeaderProps) => {
 
     const { open } = useSidebar()
 
@@ -43,4 +44,4 @@ const index = ({ cartItemsCount }: HeaderProps) => {
     )
 }
 
-export default index
+export default Header
