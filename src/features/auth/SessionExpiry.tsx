@@ -34,12 +34,21 @@ export default function SessionExpiry() {
   }, [initialized, dispatch]);
   useEffect(() => {
     if (!session) return;
-    // Expired access tokens are renewed by the shared API client on demand.
-    // Clear malformed tokens rather than sending them to the server.
-    if (!tokenExpiry(session.token)) {
+    const expiry = tokenExpiry(session.token);
+    if (!expiry) {
       dispatch(clearSession());
       dispatch(baseApi.util.resetApiState());
+      return;
     }
+    let active = true;
+    let timer: number;
+    const renew = async () => {
+      const request = dispatch(baseApi.endpoints.renewSession.initiate(undefined, { track: false }));
+      const result = await request.unwrap().catch(() => false);
+      if (active && !result) timer = window.setTimeout(renew, 30000);
+    };
+    timer = window.setTimeout(renew, Math.max(0, expiry - Date.now() - 60000));
+    return () => { active = false; window.clearTimeout(timer); };
   }, [session, dispatch]);
   return null;
 }
