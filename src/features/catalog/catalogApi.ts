@@ -6,6 +6,7 @@ export interface CatalogProduct {
   name: string;
   description: string | null;
   barcode: string | null;
+  image?: string | null;
   presentation: string | null;
   dose: number | null;
   unit: string | null;
