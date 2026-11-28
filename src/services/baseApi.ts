@@ -17,7 +17,7 @@ type Query = BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>;
 const current = (api: Parameters<Query>[1]) => (api.getState() as { auth: AuthState }).auth.session;
 let refreshing: Promise<boolean> | undefined;
 
-function refresh(api: Parameters<Query>[1], options: Parameters<Query>[2], token: string) {
+function refresh(api: Parameters<Query>[1], options: Parameters<Query>[2], token: string): Promise<boolean> {
   if (!refreshing) {
     const run = async () => {
       if (current(api)?.token !== token) return false;
@@ -37,7 +37,7 @@ function refresh(api: Parameters<Query>[1], options: Parameters<Query>[2], token
       }
       return false;
     };
-    refreshing = (typeof navigator !== 'undefined' && navigator.locks
+    refreshing = Promise.resolve(typeof navigator !== 'undefined' && navigator.locks
       ? navigator.locks.request('medifind-auth', run)
       : run()).finally(() => { refreshing = undefined; });
   }
