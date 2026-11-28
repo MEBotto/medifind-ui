@@ -4,7 +4,7 @@ import { clearSession, setSession, tokenExpiry, type Session } from './authSlice
 import { baseApi } from '@/services/baseApi';
 
 let restoration: Promise<Session | null> | undefined;
-function restore() {
+function restore(): Promise<Session | null> {
   if (!restoration) {
     const run = async () => {
       const response = await fetch((import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '') + '/auth/refresh', {
@@ -14,7 +14,7 @@ function restore() {
       const body = await response.json() as { data: Session };
       return body.data;
     };
-    restoration = (navigator.locks ? navigator.locks.request('medifind-auth', run) : run()).catch(() => null);
+    restoration = Promise.resolve(navigator.locks ? navigator.locks.request('medifind-auth', async () => await run()) : run()).catch(() => null);
   }
   return restoration;
 }
