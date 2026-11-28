@@ -1,20 +1,23 @@
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-import DashboardLayout from "./pages/(dashboard)/layout";
-import Login from "./pages/login";
-import Register from "./pages/register";
-import DashboardIndex from "./pages/(dashboard)";
-import Account from "./pages/(dashboard)/account";
-import Checkout from "./pages/(dashboard)/checkout";
-import Orders from "./pages/(dashboard)/my_orders";
-import Pharmacies from "./pages/(dashboard)/pharmacies";
-import Reports from "./pages/(dashboard)/reports";
-import Cart from "./pages/(dashboard)/cart";
-import MyProducts from "./pages/(dashboard)/my_products";
-import { Toaster } from "sonner"
+import { Toaster } from "@/components/ui/sonner";
+const DashboardLayout = lazy(() => import("./pages/(dashboard)/layout"));
+const Login = lazy(() => import("./pages/login"));
+const Register = lazy(() => import("./pages/register"));
+const DashboardIndex = lazy(() => import("./pages/(dashboard)"));
+const Account = lazy(() => import("./pages/(dashboard)/account"));
+const Checkout = lazy(() => import("./pages/(dashboard)/checkout"));
+const Orders = lazy(() => import("./pages/(dashboard)/my_orders"));
+const Pharmacies = lazy(() => import("./pages/(dashboard)/pharmacies"));
+const Reports = lazy(() => import("./pages/(dashboard)/reports"));
+const Cart = lazy(() => import("./pages/(dashboard)/cart"));
+const MyProducts = lazy(() => import("./pages/(dashboard)/my_products"));
+
 
 function App() {
   return (
     <>
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -29,6 +32,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
         </Route>
       </Routes>
+      </Suspense>
       <Toaster position="top-center" richColors />
     </>
   );
