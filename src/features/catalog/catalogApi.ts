@@ -26,14 +26,27 @@ export interface PharmacySearch {
   limit?: number;
 }
 export interface ProductAvailability {
+  listingId: string;
   pharmacy: { id: string; name: string; address: string | null; lat: number | null; lng: number | null; phone: string | null };
   price: string | null;
   available: boolean;
   updatedAt: string;
   distanceKm: number | null;
 }
+export interface ListingDetail extends Omit<ProductAvailability, 'distanceKm' | 'pharmacy'> {
+  product: CatalogProduct;
+  pharmacy: ProductAvailability['pharmacy'] & { weeklyHours: unknown[] };
+}
 export const catalogApi = baseApi.enhanceEndpoints({ addTagTypes: ['Catalog'] }).injectEndpoints({
   endpoints: builder => ({
+    getCatalogProduct: builder.query<CatalogProduct, string>({
+      query: id => '/catalog/' + encodeURIComponent(id),
+      providesTags: ['Catalog'],
+    }),
+    getListingDetail: builder.query<ListingDetail, string>({
+      query: id => '/catalog/listings/' + encodeURIComponent(id),
+      providesTags: ['Catalog'],
+    }),
     searchCatalog: builder.query<{ data: CatalogProduct[]; pagination: Pagination }, CatalogSearch>({
       query: params => ({ url: '/catalog', params }),
       providesTags: ['Catalog'],
@@ -44,4 +57,4 @@ export const catalogApi = baseApi.enhanceEndpoints({ addTagTypes: ['Catalog'] })
     }),
   }),
 });
-export const { useSearchCatalogQuery, useLazySearchCatalogQuery, useGetProductPharmaciesQuery, useLazyGetProductPharmaciesQuery } = catalogApi;
+export const { useGetCatalogProductQuery, useLazyGetCatalogProductQuery, useGetListingDetailQuery, useLazyGetListingDetailQuery, useSearchCatalogQuery, useLazySearchCatalogQuery, useGetProductPharmaciesQuery, useLazyGetProductPharmaciesQuery } = catalogApi;
