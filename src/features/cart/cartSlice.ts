@@ -15,7 +15,7 @@ const slice = createSlice({
     addItem: (state, { payload }: PayloadAction<CartItem>) => {
       if (!state.ownerId || !validQuantity(payload.quantity) ||
           !Number.isSafeInteger(payload.unitPriceCents) || payload.unitPriceCents < 0 ||
-          payload.unitPriceCents > 999999999999 || !payload.listingId || !payload.productId || !payload.pharmacyId) return;
+          payload.unitPriceCents > Math.floor(Number.MAX_SAFE_INTEGER / (100 * 999)) || !payload.listingId || !payload.productId || !payload.pharmacyId) return;
       const existing = state.items.find(item => item.listingId === payload.listingId);
       if (existing) {
         const quantity = existing.quantity + payload.quantity;
